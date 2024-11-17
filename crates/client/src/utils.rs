@@ -98,9 +98,14 @@ pub fn program_packages() -> impl Iterator<Item = cargo_metadata::Package> {
 
     cargo_toml_data.packages.into_iter().filter(|package| {
         // TODO less error-prone test if the package is a _program_?
-        if let Some("programs") = package.manifest_path.iter().nth_back(2) {
+        let mut program_path = package.manifest_path.iter();
+        if let Some("program") = program_path.nth_back(1) {
             return true;
         }
+        if let Some("programs") = program_path.nth_back(0) {//nth_back consumes the returned element
+            return true;
+        }
+
         false
     })
 }
